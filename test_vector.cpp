@@ -110,6 +110,7 @@ std::ostream& operator<<(std::ostream& os, const Vector<Type, N>& a1){
     }
     return os;
 }
+//кек
 template <typename Type, int N>
 Vector<Type, N> operator*(Type num, const Vector<Type, N>& vec){
     Vector<Type, N> vec1(N);
