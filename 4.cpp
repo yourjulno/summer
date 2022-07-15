@@ -35,7 +35,7 @@ public:
 
     //  копирование
     Polynom(const Polynom &other) {
-        assert(other.degree != degree);
+        assert(other.degree == degree);
         for (int i = 0; i < degree; i++) {
             koef[i] = other.koef[i];
             degree = other.degree;
@@ -64,6 +64,7 @@ public:
 
     //присваивание
     Polynom &operator=(const Polynom &other) {
+        assert(degree == other.degree);
         degree = other.degree;
         koef.clear();
         koef.shrink_to_fit();
@@ -83,6 +84,7 @@ public:
                     is_equal = false;
                 }
             }
+        //cout << is_equal;
         return is_equal;
     }
 
@@ -98,47 +100,54 @@ public:
         for (int i = 0; i < degree; i++) {
             koef[i] = koef[i] * i;
         }
+        for (int i = 0; i < degree; i++) {
+            koef[i] = koef[i + 1];
+        }
         degree--;
         return *this;
     }
 
     //первообразная
     Polynom &integral() {
-        for (int i = 0; i < degree; i++) {
-            koef[i] = koef[i] / (i + 1);
-        }
-        //koef[degree + 1] = koef[degree] / (degree - 1);
-        degree++;
-        return *this;
-    }
-
-    //умножение на число
-
-    Polynom &operator*=(const double k) {
 
         for (int i = 0; i < degree; i++) {
-            koef[i] = koef[i] * k;
+
+                koef[i] = koef[i] / (i + 1);
+            }
+        for (int i = degree; i > 0; i--) {
+
+            koef[i] = koef[i - 1];
+
         }
-        return *this;
-    }
+            degree++;
+            koef[0] = 0;
 
-    Polynom operator*(const double k) const {
+            return *this;
+        }
 
-        Polynom polynom;
-        return polynom.operator*=(k);
+        //умножение на число
 
-    }
+        Polynom &operator*=(const double k) {
+
+            for (int i = 0; i < degree; i++) {
+                koef[i] = k * koef[i];
+            }
+            return *this;
+        }
+
+        Polynom operator*(const double k) const {
+
+            Polynom polynom;
+            polynom.operator*=(k);
+            return polynom;
+
+        }
 
 
-    void OutputPolynom() {
-//        if (koef[degree] == 1)
-//            cout << "X^" << degree;
-//        else if (koef[degree] == -1)
-//            cout << "-X^" << degree;
-//        else
-            //cout << koef[degree -1] << "X^" << degree;
+        void OutputPolynom() {
+            cout << koef[degree - 1] << "x^" << degree - 1;
 
-        for (int i = degree - 1; i > 0 ; i--) {
+            for (int i = degree - 2; i > 0; i--) {
 //            if (koef[i] > 0) {
 //                if (koef[i] == 1)
 //                    cout << " + " << "X^" << i;
@@ -146,27 +155,36 @@ public:
 //                if (i == 0){
 //
 //                cout << koef[0]
-                    cout << " + " << koef[i] << "X^" << i;
+                cout << " + " << koef[i] << "x^" << i;
 //            } else if (koef[i] < 0)
 //                if (koef[i] == -1)
 //                    cout << " - " << "X^" << i;
 //                else
 //                    cout << " - " << (-1) * koef[i] << "X^" << i;
-        }
+            }
 
-        if (koef[0] > 0)
-            cout << " + " << koef[0] << "\n";
-        else if (koef[0] < 0)
-            cout << " - " << (-1) * koef[0] << "\n";
-    }
-};
-    int main(){
-        vector<double> q = {2, 3, 4};
+            if (koef[0] > 0)
+                cout << " + " << koef[0] << "\n";
+            else if (koef[0] < 0)
+                cout << " - " << (-1) * koef[0] << "\n";
+        }
+    };
+
+
+    int main() {
+        vector<double> q = {2, 3, 4}, n = {5, 6, 8, 9};
         Polynom p{3, q};
+        Polynom j{4, n};
         //p.InputPolynom();
-        p.integral();
+//        p.derivative();
+//        p.integral();
 //       p.operator*=(2);
+        //p.operator=(j);
+        // p.operator*(2);
+        // p.operator==(j);
+
         p.OutputPolynom();
 
     }
+
 
