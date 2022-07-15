@@ -182,7 +182,7 @@ public:
         //p.operator=(j);
         // p.operator*(2);
         // p.operator==(j);
-
+//кек
         p.OutputPolynom();
 
     }
