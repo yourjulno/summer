@@ -16,19 +16,24 @@ class Polynom {
     vector<double> ost; //остаток от деления
 
 public:
-    Polynom() {
-
+    Polynom() = default;
+    explicit Polynom(int degree_){
+        degree = degree_;
+//        for (int i = 0; i < degree; i++){
+//            koef[i] = 0.0;
+//        }
+    koef.resize(degree);
+        for (int i = 0; i < degree; i++){
+            koef[i] = 0.0;
+       }
     }
 
-    Polynom(unsigned int deg, vector<double> k) {
-        degree = deg;
+    Polynom(int deg, vector<double> k): degree(deg) {
+
         koef.resize(degree);
         vector<int> degrees(deg - 1);
         for (int i = 0; i < deg; i++) {
             koef[i] = k[i]; //создали коэффициенты перед степенями
-        }
-        for (int i = 0; i < deg; i++) {
-            degrees[i] = i; //заполнили показатели степеней
         }
 
     }
@@ -64,7 +69,7 @@ public:
 
     //присваивание
     Polynom &operator=(const Polynom &other) {
-        assert(degree == other.degree);
+        //assert(degree == other.degree);
         degree = other.degree;
         koef.clear();
         koef.shrink_to_fit();
@@ -76,7 +81,7 @@ public:
     }
 
     //равенство
-    bool operator==(const Polynom &other) {
+    bool operator==(const Polynom &other){
         bool is_equal = true;
         for (auto i: koef)
             for (auto j: other.koef) {
@@ -87,12 +92,36 @@ public:
         //cout << is_equal;
         return is_equal;
     }
+    void is_degree_right() {
+        int tdeg = degree;
+        for (int i = degree - 1; i >= 0; i--) {
+            if (koef[i] != 0.0)
+                break;
+            else
+                tdeg--;
+        }
+        degree = tdeg;
+    }
 
-//    Polynom operator/(const Polynom &other) {
-//        if (degree == other.degree) {
-//
-//        }
-//    }
+    Polynom operator/(const Polynom& other) {
+       // assert(degree > other.degree);
+        Polynom p1(other.degree, other.koef);
+        Polynom p2(degree, koef);
+        int delta = p2.degree - p1.degree + 1;
+        Polynom res(delta);
+        for (int i = 0; i < delta; i++) {
+            res.koef[delta - i - 1] = p2.koef[p2.degree - i - 1] / p1.koef[p1.degree - 1];
+            for (int j = 0; j < p1.degree; j++) {
+                p2.koef[p2.degree - j - i - 1] -= p1.koef[p1.degree - j - 1] * res.koef[delta - i - 1];
+            }
+        }
+        p2.is_degree_right();
+        if (p2.degree != 0) {
+            cout << "!!! имеется остаток от деления " <<  endl;
+        }
+        return res;
+    }
+
 
     //взятие производной
     Polynom &derivative() {
@@ -145,9 +174,9 @@ public:
 
 
         void OutputPolynom() {
-            cout << koef[degree - 1] << "x^" << degree - 1;
+            //cout << koef[degree - 1] << "x^" << degree - 1;
 
-            for (int i = degree - 2; i > 0; i--) {
+            for (int i = degree - 1; i > 0; i--) {
 //            if (koef[i] > 0) {
 //                if (koef[i] == 1)
 //                    cout << " + " << "X^" << i;
@@ -172,10 +201,10 @@ public:
 
 
     int main() {
-        vector<double> q = {2, 3, 4}, n = {5, 6, 8, 9};
+        vector<double> q = {1, 2, 1}, n = {1, 1};
         Polynom p{3, q};
-        Polynom j{4, n};
-        //p.InputPolynom();
+        Polynom j{2, n};
+       auto res = p.operator/(j);
 //        p.derivative();
 //        p.integral();
 //       p.operator*=(2);
@@ -183,7 +212,7 @@ public:
         // p.operator*(2);
         // p.operator==(j);
 //кек
-        p.OutputPolynom();
+        res.OutputPolynom();
 
     }
 
