@@ -364,12 +364,7 @@ public:
 
             data[i] = data[i] / (i + 1);
         }
-        //degree++;
-//        for (int i = degree; i > 0; i--) {
-//
-//            koef[i] = koef[i - 1];
-//
-//        }
+
         double tmp = data[data.size() - 1];
         for (int i = data.size() - 1; i > 0; --i) {
 
@@ -415,7 +410,7 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const Polinomial<T> &p) {
 
         for (int i = p.data.size() - 1; i > 0; i--){
-            if(p.data[i] != 0)
+            //if(p.data[i] != 0)
             cout << " + " << p.data[i] << "x^" << i;
             if (i == 0){
                 cout << p.data[0];
@@ -436,21 +431,21 @@ public:
 
 
     int main() {
-        vector<int> n = {1, 1}, z = {0, 0, 0, 3, 4, 5};
+        vector<double> n = {1, 1}, z = {0, 0, 0, 3, 4, 5};
         vector<double> q = {1, 2, 1};
-        Polynom<double> p{3, q};
+        Polynom<double> p {3, q};
        // Polynom<int> j{2, n};
-        Polinomial<int> a{z};
+        Polinomial<double> a{z};
       // auto res = p.operator/(j);
-        p.derivative();
+        //p.derivative();
        // p.integral();
 //       p.operator*=(2);
         //p.operator=(j);
         // p.operator*(2);
         // p.operator==(j);
 //кек
-       a.derivative();
-     //  a.integral();
+       //a.derivative();
+       a.integral();
        //p.integral();
         cout << a << endl << p;
 
