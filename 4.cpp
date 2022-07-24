@@ -161,16 +161,25 @@ public:
     //первообразная
     Polynom<T> &integral() {
 
-        for (size_t i = 0; i < degree; i++) {
+        for (int i = 0; i < degree ; i++) {
 
             koef[i] = koef[i] / (i + 1);
         }
-        for (size_t i = degree; i > 0; i--) {
+        //degree++;
+//        for (int i = degree; i > 0; i--) {
+//
+//            koef[i] = koef[i - 1];
+//
+//        }
+        double tmp = koef[degree - 1];
+        for (int i = degree - 1; i > 0; --i) {
 
-            koef[i] = koef[i - 1];
-
+           koef[i] = koef[i - 1];
         }
-        degree++;
+        degree ++;
+        koef.resize(degree + 1);
+        koef[degree - 1] = tmp;
+
         koef[0] = 0;
 
         return *this;
@@ -228,11 +237,10 @@ class Polinomial{
     vector<T> data;
 
     void is_zero_out(vector <T> coef){
-        for (auto i = coef.rbegin(); i != coef.rend(); ++i){
-            if (*i == T(0)){
-                coef.pop_back();
+        for (auto i = 0; i < coef.size(); i++){
+            if (coef[i] == 0){
+                coef.erase(coef.begin() + i);
             }
-            else break;
         }
     }
 public:
@@ -290,17 +298,6 @@ public:
         return *this;
     }
 
-    Polinomial<T> &operator=(const Polinomial<T> &other) {
-
-
-        data.clear();
-        data.shrink_to_fit();
-
-        for (int i = 0; i < other.data.size(); i++) {
-            data[i] = other.data[i];
-        }
-        return *this;
-    }
 
     //равенство
     bool operator==(const Polinomial<T> &other) const {
@@ -337,7 +334,7 @@ public:
     }
 
     Polinomial<T> &operator%=(const Polinomial<T> &other) {
-        Polynom<T> res = *this / other;
+        Polinomial<T> res = *this / other;
         *this -= other * res;
         return *this;
     }
@@ -353,8 +350,9 @@ public:
             data[i] = data[i + 1];
         }
 
-        is_zero_out(data);
+        //is_zero_out(data);
         data[data.size() - 1] = 0;
+        is_zero_out(data);
 
         return *this;
     }
@@ -362,17 +360,25 @@ public:
     //первообразная
     Polinomial<T> &integral() {
 
-        for (int i = data.size() - 1; i >= 0; i--) {
-            //if(data[i + 1] != 0)
-            auto k = data[i] / (i + 1);
-            data[i] = k;
+        for (int i = 0; i < data.size() ; i++) {
+
+            data[i] = data[i] / (i + 1);
         }
-        for (int i = data.size() - 1; i > 0; i--) {
+        //degree++;
+//        for (int i = degree; i > 0; i--) {
+//
+//            koef[i] = koef[i - 1];
+//
+//        }
+        double tmp = data[data.size() - 1];
+        for (int i = data.size() - 1; i > 0; --i) {
 
             data[i] = data[i - 1];
-
         }
-        is_zero_out(data);
+
+        data.resize(data.size() + 1);
+        data[data.size() - 1] = tmp;
+
         data[0] = 0;
 
         return *this;
@@ -409,11 +415,13 @@ public:
     friend std::ostream &operator<<(std::ostream &out, const Polinomial<T> &p) {
 
         for (int i = p.data.size() - 1; i > 0; i--){
+            if(p.data[i] != 0)
             cout << " + " << p.data[i] << "x^" << i;
             if (i == 0){
                 cout << p.data[0];
             }
         }
+
         if (p.data[0] > 0) {
             cout << " + " << p.data[0] << "\n";
         }
@@ -429,21 +437,22 @@ public:
 
     int main() {
         vector<int> n = {1, 1}, z = {0, 0, 0, 3, 4, 5};
-        vector<int> q = {1, 2, 1};
-        Polynom<int> p{3, q};
-        Polynom<int> j{2, n};
+        vector<double> q = {1, 2, 1};
+        Polynom<double> p{3, q};
+       // Polynom<int> j{2, n};
         Polinomial<int> a{z};
       // auto res = p.operator/(j);
         p.derivative();
-//        p.integral();
+       // p.integral();
 //       p.operator*=(2);
         //p.operator=(j);
         // p.operator*(2);
         // p.operator==(j);
 //кек
-       // a.derivative();
-       a.integral();
-        cout << a;
+       a.derivative();
+     //  a.integral();
+       //p.integral();
+        cout << a << endl << p;
 
     }
 
